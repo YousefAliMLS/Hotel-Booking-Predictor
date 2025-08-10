@@ -4,6 +4,8 @@ import pickle
 import pandas as pd
 import warnings as wr
 import traceback
+from flask import Flask
+import os
 wr.filterwarnings('ignore')
 
 
@@ -109,3 +111,5 @@ def Predict():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
+app = Flask(__name__)
