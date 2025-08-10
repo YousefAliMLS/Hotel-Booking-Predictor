@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Inter for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4A90E2; /* A vibrant blue */
+            --secondary-color: #F0F4F8; /* Light gray for background */
+            --card-background: #FFFFFF;
+            --text-color: #333333;
+            --light-text-color: #666666;
+            --border-color: #E0E6ED;
+            --shadow-light: rgba(0, 0, 0, 0.05);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+            --gradient-start: #4A90E2;
+            --gradient-end: #63B8FF;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--secondary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem 1rem;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 900px; /* Slightly wider container */
+            background: var(--card-background);
+            padding: 3rem; /* More padding */
+            border-radius: 15px; /* More rounded corners */
+            box-shadow: 0 10px 30px var(--shadow-medium); /* Enhanced shadow */
+            transition: all 0.3s ease-in-out;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            transition: color 0.3s ease;
+        }
+
+        p.text-center {
+            color: var(--light-text-color);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem; /* Increased spacing */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: 8px; /* Rounded inputs */
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            color: var(--text-color);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: inset 0 1px 3px var(--shadow-light);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25); /* Bootstrap-like focus ring */
+            outline: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--gradient-end), var(--gradient-start));
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.6);
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 10px rgba(74, 144, 226, 0.3);
+        }
+
+        .prediction-result {
+            margin-top: 3rem; /* More margin */
+            padding: 1.5rem; /* More padding */
+            border-radius: 10px;
+            background-color: #e6f7ff; /* Lighter blue background for result */
+            border: 1px solid #99e6ff; /* Subtle border */
+            text-align: center;
+            font-size: 1.4rem; /* Larger font for result */
+            font-weight: 600;
+            color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1);
+            animation: fadeInScale 0.5s ease-out; /* Animation for result */
+        }
+
+        /* Animation for prediction result */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .btn-primary {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+            .prediction-result {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hotel Booking Prediction</h1>
+        <p class="text-center">Enter the details to predict booking status</p>
+
+        <form action="/predict" method="POST">
+            <div class="row">
+                <!-- Column 1: Numerical Inputs -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="lead_time">Lead Time (days)</label>
+                        <input type="number" class="form-control" id="lead_time" name="lead time" required min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="average_price">Average Price ($)</label>
+                        <input type="number" class="form-control" id="average_price" name="average price" step="0.01" required min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="special_requests">Special Requests</label>
+                        <input type="number" class="form-control" id="special_requests" name="special requests" required min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="number_of_adults">Number of Adults</label>
+                        <input type="number" class="form-control" id="number_of_adults" name="number of adults" required min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="number_of_children">Number of Children</label>
+                        <input type="number" class="form-control" id="number_of_children" name="number of children" required min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="number_of_weekend_nights">Number of Weekend Nights</label>
+                        <input type="number" class="form-control" id="number_of_weekend_nights" name="number of weekend nights" required min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="number_of_previous_bookings">Number of Previous Bookings</label>
+                        <input type="number" class="form-control" id="number_of_previous_bookings" name="number of previous bookings" required min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date_of_reservation">Date of Reservation</label>
+                        <input type="date" class="form-control" id="date_of_reservation" name="date of reservation" required>
+                    </div>
+
+                </div>
+
+                <!-- Column 2: Categorical Inputs -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="meal_type">Meal Type</label>
+                        <select class="form-select" id="meal_type" name="type of meal" required>
+                            <option value="" selected disabled>Select meal type</option>
+                            <option value="Meal Plan 1">Meal Plan 1</option>
+                            <option value="Meal Plan 2">Meal Plan 2</option>
+                            <option value="Meal Plan 3">Meal Plan 3</option>
+                            <option value="Not Selected">Not Selected</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="room_type">Room Type</label>
+                        <select class="form-select" id="room_type" name="room type" required>
+                            <option value="" selected disabled>Select room type</option>
+                            <option value="Room_Type 1">Room Type 1</option>
+                            <option value="Room_Type 2">Room Type 2</option>
+                            <option value="Room_Type 3">Room Type 3</option>
+                            <option value="Room_Type 4">Room Type 4</option>
+                            <option value="Room_Type 5">Room Type 5</option>
+                            <option value="Room_Type 6">Room Type 6</option>
+                            <option value="Room_Type 7">Room Type 7</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="market_segment">Market Segment</label>
+                        <select class="form-select" id="market_segment" name="market segment type" required>
+                            <option value="" selected disabled>Select market segment</option>
+                            <option value="Online">Online</option>
+                            <option value="Offline">Offline</option>
+                            <option value="Corporate">Corporate</option>
+                            <option value="Complementary">Complementary</option>
+                            <option value="Aviation">Aviation</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group text-center mt-3">
+                <button type="submit" class="btn btn-primary btn-lg">Predict Booking Status</button>
+            </div>
+        </form>
+
+        {% if prediction_text %}
+        <div class="prediction-result">
+            <p>{{ prediction_text }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
