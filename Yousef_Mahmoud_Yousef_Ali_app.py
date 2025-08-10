@@ -53,8 +53,12 @@ def preprocessing_single_inputs(input_data):
     data_file_scaler = scaler.transform(data_file)
     return data_file_scaler
 
-@app.route("/predict", methods=["POST"])
+@app.route("/predict", methods=["GET", "POST"])
 def Predict():
+    if request.method == "GET":
+        #if the user visits /predict directly, show the homepage form
+        return render_template("Yousef_Mahmoud_Yousef_Ali_index.html")
+
     try:
         input_data = request.form.to_dict()
         required_form_fields = [
@@ -67,6 +71,7 @@ def Predict():
             if f not in input_data or not input_data[f].strip():
                 return render_template("Yousef_Mahmoud_Yousef_Ali_index.html",
                                        predict_texts=f"Error, please fill all the fields. Missing: {f}")
+
         numeric_features = [
             'lead time', 'average price', 'special requests',
             'number of adults', 'number of children',
@@ -76,9 +81,11 @@ def Predict():
         for k in numeric_features:
             if k in input_data:
                 input_data[k] = float(input_data[k])
+
         processed_features = preprocessing_single_inputs(input_data)
         predict_numeric = model.predict(processed_features)
         predict_texts = label_encoder.inverse_transform(predict_numeric)
+
         return render_template("Yousef_Mahmoud_Yousef_Ali_index.html",
                                prediction_text=f"Hotel Booking prediction: {predict_texts[0]}")
     except Exception as e:
@@ -87,6 +94,8 @@ def Predict():
         return render_template("Yousef_Mahmoud_Yousef_Ali_index.html",
                                predict_texts=f"Error in prediction: {e}")
 
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
